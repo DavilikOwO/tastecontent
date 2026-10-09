@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TasteToContent</title>
+  <meta name="description" content="Turn your audience's cultural taste into a content plan and brand shortlist, grounded in Qloo taste data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="/"><span class="dot" aria-hidden="true"></span>TasteToContent</a>
+    <p class="mode" id="mode" role="status">Checking data source…</p>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Turn what your audience loves into what you post next.</h1>
+      <p class="lede">Describe who watches you. We map their taste across music, TV, film, brands and podcasts with Qloo, then write video ideas that show exactly which taste signal each one comes from.</p>
+    </section>
+
+    <form id="form" class="brief" novalidate>
+      <div class="field field-wide">
+        <label for="audience">Who watches you?</label>
+        <textarea id="audience" name="audience" rows="4" maxlength="1200" required
+          placeholder="Women 20–28 in Barcelona into indie music, A24 films, vintage fashion and film photography."></textarea>
+      </div>
+      <div class="field field-wide">
+        <label for="references">Things they love <span class="hint">up to 5, separated by commas</span></label>
+        <input id="references" name="references" type="text" autocomplete="off"
+          placeholder="Phoebe Bridgers, Lady Bird, Polaroid">
+      </div>
+      <div class="field">
+        <label for="location">Where they are <span class="hint">optional</span></label>
+        <input id="location" name="location" type="text" autocomplete="off" placeholder="Barcelona">
+      </div>
+      <div class="field">
+        <label for="language">Plan language</label>
+        <select id="language" name="language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button type="submit" id="submit">Build my plan</button>
+        <button type="button" id="example" class="quiet">Fill in an example</button>
+      </div>
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+    </form>
+
+    <section class="progress" id="progress" hidden aria-live="polite">
+      <ol>
+        <li data-step="0">Reading your audience</li>
+        <li data-step="1">Matching references in Qloo</li>
+        <li data-step="2">Mapping their taste</li>
+        <li data-step="3">Writing ideas that cite the data</li>
+      </ol>
+    </section>
+
+    <div id="results" hidden>
+      <section class="summary" aria-labelledby="summary-h">
+        <h2 id="summary-h" class="visually-hidden">Summary</h2>
+        <p id="summary"></p>
+        <div id="warnings" class="warnings" hidden></div>
+      </section>
+
+      <section class="block" aria-labelledby="map-h">
+        <h2 id="map-h">Their taste map</h2>
+        <p class="block-note">What Qloo associates with this audience, ranked by relative affinity. Each idea below links back to these.</p>
+        <div id="taste-map" class="taste-map"></div>
+        <div id="concepts" class="concepts"></div>
+      </section>
+
+      <section class="block" aria-labelledby="pillars-h">
+        <h2 id="pillars-h">Content pillars</h2>
+        <div id="pillars" class="pillars"></div>
+      </section>
+
+      <section class="block" aria-labelledby="videos-h">
+        <h2 id="videos-h">Video ideas</h2>
+        <ol id="videos" class="videos"></ol>
+      </section>
+
+      <section class="block" aria-labelledby="brands-h">
+        <h2 id="brands-h">Brands to pitch</h2>
+        <ul id="brands" class="brands"></ul>
+      </section>
+
+      <section class="block limits" aria-labelledby="limits-h">
+        <h2 id="limits-h">What this does not tell you</h2>
+        <p id="limits"></p>
+      </section>
+
+      <details class="trace">
+        <summary>How this plan was built <span id="trace-count"></span></summary>
+        <div class="trace-body">
+          <p id="interpretation"></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Step</th><th scope="col">Qloo tool</th><th scope="col">Why</th><th scope="col">Status</th><th scope="col">Results</th><th scope="col">Time</th></tr></thead>
+              <tbody id="trace-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <p>Taste data from Qloo. Affinities describe groups, never individuals. No personal data is sent.</p>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

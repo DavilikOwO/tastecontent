@@ -1,0 +1,22 @@
+{
+  "name": "tastetocontent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn your audience's cultural taste into a content plan and brand shortlist, grounded in Qloo taste data.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "probe": "node scripts/probe.mjs",
+    "test:pipeline": "node scripts/run-pipeline.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1",
+    "@modelcontextprotocol/sdk": "1.30.1",
+    "express": "^5.1.0"
+  }
+}
