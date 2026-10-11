@@ -51,19 +51,37 @@
       <p class="form-error" id="form-error" role="alert" hidden></p>
     </form>
 
-    <section class="progress" id="progress" hidden aria-live="polite">
-      <ol>
-        <li data-step="0">Reading your audience</li>
-        <li data-step="1">Matching references in Qloo</li>
-        <li data-step="2">Mapping their taste</li>
-        <li data-step="3">Writing ideas that cite the data</li>
+    <section class="progress" id="progress" hidden>
+      <h2 class="visually-hidden">Progress</h2>
+      <ol class="stages" aria-live="polite">
+        <li data-stage="interpret">Reading your audience</li>
+        <li data-stage="resolve">Matching references in Qloo</li>
+        <li data-stage="map">Mapping their taste</li>
+        <li data-stage="write">Writing ideas that cite the data</li>
       </ol>
+      <ol class="call-log" id="call-log" aria-label="Qloo calls so far"></ol>
+    </section>
+
+    <section class="confirm" id="confirm" hidden aria-labelledby="confirm-h">
+      <h2 id="confirm-h">Which one did you mean?</h2>
+      <p class="block-note">Some references match more than one thing in Qloo. Pick the right one so the taste map is built on what your audience actually likes.</p>
+      <form id="confirm-form">
+        <div id="confirm-fields"></div>
+        <div class="actions">
+          <button type="submit">Continue with these</button>
+          <button type="button" class="quiet" id="confirm-cancel">Edit my description</button>
+        </div>
+      </form>
     </section>
 
     <div id="results" hidden>
       <section class="summary" aria-labelledby="summary-h">
         <h2 id="summary-h" class="visually-hidden">Summary</h2>
         <p id="summary"></p>
+        <div class="summary-actions">
+          <button type="button" id="copy-plan" class="quiet">Copy plan as text</button>
+          <span id="copy-status" role="status"></span>
+        </div>
         <div id="warnings" class="warnings" hidden></div>
       </section>
 

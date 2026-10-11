@@ -20,8 +20,16 @@ const result = await buildPlan(
     audience: "Women 20-28 in Barcelona who love indie music, A24 films, vintage fashion and film photography.",
     references: ["Phoebe Bridgers", "Lady Bird", "Polaroid"],
     language: process.argv[2] === "es" ? "es" : "en",
+    autoResolve: true, // in the terminal there is nobody to ask, so take the top match
   },
-  { qloo, llm },
+  {
+    qloo,
+    llm,
+    onEvent: (e) => {
+      if (e.type === "stage") console.log(`-- ${e.stage}`);
+      if (e.type === "call") console.log(`   ${e.call.tool}: ${e.call.purpose} -> ${e.call.status} (${e.call.resultCount})`);
+    },
+  },
 );
 await qloo.close();
 
@@ -32,5 +40,7 @@ if (!result.ok) {
 console.log("Seeds:", result.resolved.seeds.map((s) => s.name).join(", "));
 console.log("Evidence items:", result.evidence.length, "· Qloo calls:", result.trace.length);
 console.log("Pillars:", result.plan.pillars.map((p) => p.title));
+console.log("Writer:", result.writer);
 console.log("Videos:", result.plan.videos.length, "· Brands:", result.plan.brands.map((b) => b.name));
+for (const v of result.plan.videos) console.log(`  - [${v.effort}] ${v.title} | ${v.hook} | ${v.evidence.join(",")}`);
 console.log("Warnings:", result.warnings);

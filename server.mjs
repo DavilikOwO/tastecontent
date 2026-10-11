@@ -39,43 +39,85 @@ const cache = new Map();
 const CACHE_MAX = 50;
 
 const app = express();
-app.use(express.json({ limit: "20kb" }));
+app.use(express.json({ limit: "32kb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/status", (_req, res) => {
   res.json({ qloo: qloo.mode, llm: llm.mode, note: qlooNote });
 });
 
-app.post("/api/plan", async (req, res) => {
-  const { audience = "", references = [], location = "", language = "en" } = req.body ?? {};
+const isShortString = (v, max) => typeof v === "string" && v.length <= max;
+
+/** Returns [input, errorMessage]. */
+function readInput(body) {
+  const language = body?.language === "es" ? "es" : "en";
+  const es = language === "es";
+  const { audience = "", references = [], location = "", confirmed = {}, skip = [], interpretation = null } = body ?? {};
+
   if (typeof audience !== "string" || audience.trim().length < 10) {
-    return res.status(400).json({
-      ok: false,
-      message: language === "es" ? "Describe tu audiencia con al menos una frase." : "Describe your audience in at least one sentence.",
-    });
+    return [null, es ? "Describe tu audiencia con al menos una frase." : "Describe your audience in at least one sentence."];
   }
-  if (audience.length > 1200 || !Array.isArray(references) || references.length > 5) {
-    return res.status(400).json({ ok: false, message: "Input too long: max 1,200 characters and 5 references." });
+  if (audience.length > 1200) {
+    return [null, es ? "La descripción es demasiado larga: máximo 1.200 caracteres." : "The description is too long: 1,200 characters at most."];
   }
-  const input = { audience, references, location, language };
+  if (!Array.isArray(references) || references.length > 5 || !references.every((r) => isShortString(r, 100))) {
+    return [null, es ? "Usa como máximo 5 referencias." : "Use 5 references at most."];
+  }
+  if (!isShortString(location, 80)) return [null, "Location is too long."];
+  if (!Array.isArray(skip) || skip.length > 5 || !skip.every((s) => isShortString(s, 100))) {
+    return [null, "Invalid skip list."];
+  }
+  if (typeof confirmed !== "object" || confirmed === null || Array.isArray(confirmed)) return [null, "Invalid choices."];
+  const entries = Object.entries(confirmed);
+  const validChoice = ([k, v]) =>
+    isShortString(k, 100) && v && isShortString(v.id, 200) && v.id && isShortString(v.name, 120) && (v.type == null || isShortString(v.type, 80));
+  if (entries.length > 5 || !entries.every(validChoice)) return [null, "Invalid choices."];
+  if (interpretation !== null && (typeof interpretation !== "object" || JSON.stringify(interpretation).length > 4000)) {
+    return [null, "Invalid interpretation."];
+  }
+
+  const cleanConfirmed = Object.fromEntries(entries.map(([k, v]) => [k, { id: v.id, name: v.name, type: v.type ?? null }]));
+  return [{ audience, references, location, language, confirmed: cleanConfirmed, skip, interpretation }, null];
+}
+
+app.post("/api/plan", async (req, res) => {
+  const [input, error] = readInput(req.body);
+  if (error) return res.status(400).json({ ok: false, message: error });
+
+  // Stream progress as newline-delimited JSON so the page can show each step live.
+  res.status(200).set({
+    "Content-Type": "application/x-ndjson; charset=utf-8",
+    "Cache-Control": "no-cache",
+    "X-Accel-Buffering": "no",
+  });
+  res.flushHeaders();
+  const send = (event) => {
+    if (!res.writableEnded && !res.destroyed) res.write(`${JSON.stringify(event)}\n`);
+  };
+  const mode = { qloo: qloo.mode, llm: llm.mode };
+
   const key = JSON.stringify(input);
-  if (cache.has(key)) return res.json({ ...cache.get(key), cached: true, mode: { qloo: qloo.mode, llm: llm.mode } });
+  if (cache.has(key)) {
+    send({ type: "done", result: { ...cache.get(key), cached: true, mode } });
+    return res.end();
+  }
 
   try {
-    const result = await buildPlan(input, { qloo, llm });
+    const result = await buildPlan(input, { qloo, llm, onEvent: send });
     if (result.ok) {
       cache.set(key, result);
       if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value);
     }
-    res.json({ ...result, mode: { qloo: qloo.mode, llm: llm.mode } });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      ok: false,
-      message: language === "es"
-        ? `No se pudo generar el plan: ${error.message}`
-        : `The plan could not be generated: ${error.message}`,
+    send({ type: "done", result: { ...result, mode } });
+  } catch (err) {
+    console.error(err);
+    const es = input.language === "es";
+    send({
+      type: "done",
+      result: { ok: false, message: es ? `No se pudo generar el plan: ${err.message}` : `The plan could not be built: ${err.message}` },
     });
+  } finally {
+    res.end();
   }
 });
 

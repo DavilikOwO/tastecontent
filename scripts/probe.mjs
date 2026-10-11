@@ -16,6 +16,9 @@ if (qloo.mode !== "live") {
 
 const calls = [
   ["qloo_describe", { entity: "Phoebe Bridgers", type: "artist" }],
+  // Without a type, to see how Qloo reports an ambiguous name.
+  ["qloo_describe", { entity: "Barbie" }],
+  ["qloo_describe", { entity: "Rosalía" }],
   ["qloo_find_tags", { query: "indie folk", limit: 3 }],
   ["qloo_recommend", { target_type: "tv_show", signals: ["Phoebe Bridgers"], limit: 5, explain: true }],
   ["qloo_recommend", { target_type: "brand", signals: ["Phoebe Bridgers"], demographic: "women 18-24", limit: 5, explain: true }],

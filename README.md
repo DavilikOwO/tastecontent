@@ -7,10 +7,13 @@ Small creators know *who* watches them, but not what to make for them or which b
 ## What it does
 
 1. **Describe the audience** in plain words, plus up to 5 things they love (artists, shows, films, brands) and optionally where they are.
-2. **Taste map**: music, TV, film, brands, podcasts (and places, when a location is given) that Qloo associates with that audience, ranked by relative affinity.
-3. **Plan**: 3 content pillars, video ideas with a 2-second hook and format, and brands to pitch.
-4. **Receipts**: each pillar, video and brand carries evidence chips. Hover or click one to see the Qloo entity it is based on. Ideas that cannot cite Qloo evidence are removed before they reach the user.
-5. **How it was built**: a trace of every Qloo call (tool, purpose, status, result count, time).
+2. **Confirm ambiguous references**: when Qloo reports that a name matches more than one entity (`needs_input`), the agent stops and asks which one you meant, or lets you leave it out, before building anything on a guess.
+3. **Watch the agent work**: progress streams live, showing each Qloo call as it happens.
+4. **Taste map**: music, TV, film, brands, podcasts (and places, when a location is given) that Qloo associates with that audience, ranked by relative affinity.
+5. **Plan**: 3 content pillars and 6–8 video ideas, each with a 2-second hook, a native short-form format, an effort level, three shot-by-shot beats and a caption, plus brands to pitch. The best ideas deliberately cross two categories (a film and a brand, an artist and a place).
+6. **Receipts**: each pillar, video and brand carries evidence chips. Hover or click one to see the Qloo entity it is based on. Ideas that cannot cite Qloo evidence, and brands Qloo did not return, are removed before they reach the user.
+7. **Take it with you**: copy the whole plan as Markdown in one click.
+8. **How it was built**: a trace of every Qloo call and every choice you made (tool, purpose, status, result count, time).
 
 ## Qloo tools used and why
 
@@ -21,14 +24,14 @@ Small creators know *who* watches them, but not what to make for them or which b
 | Taste map | `qloo_recommend` (artist, tv_show, movie, brand, podcast, place) | One combined profile of entities + tags + demographic + location |
 | Shared concepts | `qloo_entity_tags` | Concepts that jointly characterise the references, used for aesthetic pillars |
 
-The language model only interprets the description and writes the plan. All taste claims come from Qloo results, and the backend validates every citation.
+The language model only interprets the description and writes the plan, through forced tool calls so its output is always structured. All taste claims come from Qloo results, and the backend validates every citation. If the model call fails, the app still returns a plan written from templates and says so.
 
 ## Request to result (example)
 
 Input: *"Women 20–28 in Barcelona into indie music, A24 films, vintage fashion and film photography"*, references *Phoebe Bridgers, Lady Bird, Polaroid*.
 
 1. The model extracts: demographic `women 20-28`, concepts `indie`, `vintage`, `fashion`, location `Barcelona`.
-2. `qloo_describe` resolves the three references to Qloo IDs; `qloo_find_tags` resolves each concept to a tag URN.
+2. `qloo_describe` resolves the three references to Qloo IDs (asking the user if any is ambiguous); `qloo_find_tags` resolves each concept to a tag URN.
 3. `qloo_recommend` runs once per category with `signals` (IDs), `signal_tags`, `demographic` and `signal_location`.
 4. Results become numbered evidence (E1, E2…). The plan must cite those IDs; uncited ideas are dropped.
 
@@ -48,7 +51,7 @@ cp .env.example .env       # add ANTHROPIC_API_KEY (optional)
 npm start                  # http://localhost:3000
 ```
 
-Without a Qloo key the app runs on clearly labelled **sample data**. Without a model key it writes the plan from templates. Useful commands:
+Without a Qloo key the app runs on clearly labelled **sample data** (try the reference "Barbie" to see the ambiguity step). Without a model key it writes the plan from templates. Useful commands:
 
 - `npm run probe` saves raw Qloo responses to `probe-output/` (no credentials) to check parsing.
 - `npm run test:pipeline` runs the whole pipeline from the terminal.
@@ -67,7 +70,7 @@ Qloo's harness must run next to the backend, so use a container host (not server
 ## Known limitations
 
 - Qloo describes cultural taste, not TikTok trends: the plan says what this audience is likely to relate to, not what will go viral.
-- Ambiguous references are auto-resolved to the top match and flagged; a future version will ask the user to confirm.
+- The creator's own references are matched without assuming a type. The model's reading of the description (for example "Barbie" as a film) only pre-selects an option; the creator is asked whenever Qloo reports ambiguity or returns a different kind of entity than the description suggests. References the model adds on its own are matched within the type it inferred.
 - Affinity scores from separate calls are not directly comparable, so bars are scaled within each category.
 
 ## Licence
