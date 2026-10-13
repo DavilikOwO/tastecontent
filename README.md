@@ -71,6 +71,8 @@ Qloo's harness must run next to the backend, so use a container host (not server
 
 - Qloo describes cultural taste, not TikTok trends: the plan says what this audience is likely to relate to, not what will go viral.
 - The creator's own references are matched without assuming a type. The model's reading of the description (for example "Barbie" as a film) only pre-selects an option; the creator is asked whenever Qloo reports ambiguity or returns a different kind of entity than the description suggests. References the model adds on its own are matched within the type it inferred.
+- Musicians often exist in Qloo both as an "artist" and as a "person", and some names are also towns. The app collapses those twins and drops towns before asking, so the creator only chooses between genuinely different things.
+- Qloo uses age and gender only together with a location. Without one, the app leaves them out and says so.
 - Affinity scores from separate calls are not directly comparable, so bars are scaled within each category.
 
 ## Licence

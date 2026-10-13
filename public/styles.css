@@ -182,6 +182,7 @@ button.quiet { background: transparent; color: var(--violet); }
 .entity-id { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .bar { height: 4px; border-radius: 4px; background: var(--line); margin-top: 6px; overflow: hidden; }
 .bar span { display: block; height: 100%; background: var(--teal); border-radius: 4px; }
+.entity-via { display: block; margin-top: 4px; font-size: 0.78rem; color: var(--muted); }
 .entity.is-lit { background: var(--violet-soft); }
 .entity.is-lit .bar span { background: var(--violet); }
 .empty-col { color: var(--muted); font-size: 0.9rem; }

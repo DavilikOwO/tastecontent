@@ -255,7 +255,7 @@ function chips(ids) {
         type: "button",
         class: "chip",
         text: e.name,
-        title: `${e.label}${typeof e.affinity === "number" ? `, affinity ${e.affinity}` : ""}`,
+        title: `${e.label}${typeof e.affinity === "number" ? `, affinity ${e.affinity}` : ""}${e.drivenBy ? `, mostly via ${e.drivenBy}` : ""}`,
         onmouseenter: () => light([id], true),
         onmouseleave: () => light([id], false),
         onfocus: () => light([id], true),
@@ -305,6 +305,7 @@ function render(data) {
                   { class: "entity", "data-evidence": e.id },
                   el("div", { class: "entity-name" }, el("span", { text: e.name }), el("span", { class: "entity-id", text: e.id })),
                   el("div", { class: "bar", "aria-hidden": "true" }, el("span", { style: `width:${Math.max(8, pct).toFixed(0)}%` })),
+                  e.drivenBy ? el("span", { class: "entity-via", text: `mostly via ${e.drivenBy}` }) : null,
                 );
               }),
             )

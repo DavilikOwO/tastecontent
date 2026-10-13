@@ -58,7 +58,9 @@ Debe salir **"Qloo data: ready"**. Después:
 npm run probe
 ```
 
-Esto guarda las respuestas reales de Qloo en la carpeta `probe-output`. **Pásame el contenido de esos archivos** (no contienen la clave) y ajustaré el código a los datos reales. Luego `npm start` y el indicador pasará a **"Live Qloo data"**.
+Esto guarda en la carpeta `probe-output` unas cuantas respuestas reales de Qloo y una ejecución completa de la app (`pipeline.json`). **Pásame esos archivos** (no contienen ninguna clave) para revisar que todo encaja con los datos reales. Luego `npm start` y el indicador pasará a **"Live Qloo data"**.
+
+Si al configurar la clave te pregunta "Choose a model provider", pulsa Esc: no hace falta.
 
 ## 5. Clave de Claude
 Va en el archivo `.env`, en la línea `ANTHROPIC_API_KEY=`. **Nunca subas `.env` a GitHub** (ya está excluido en `.gitignore`). Si la clave falla o se queda sin saldo, la app sigue funcionando: escribe el plan con plantillas y lo avisa.
