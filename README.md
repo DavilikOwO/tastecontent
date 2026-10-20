@@ -24,7 +24,7 @@ Small creators know *who* watches them, but not what to make for them or which b
 | Taste map | `qloo_recommend` (artist, tv_show, movie, brand, podcast, place) | One combined profile of entities + tags + demographic + location |
 | Shared concepts | `qloo_entity_tags` | Concepts that jointly characterise the references, used for aesthetic pillars |
 
-The language model only interprets the description and writes the plan, through forced tool calls so its output is always structured. All taste claims come from Qloo results, and the backend validates every citation. If the model call fails, the app still returns a plan written from templates and says so.
+The language model only interprets the description and writes the plan, through structured outputs (a strict JSON Schema) so its output always arrives as a validated object. All taste claims come from Qloo results, and the backend validates every citation. If the model call fails, the app still returns a plan written from templates and says so.
 
 ## Request to result (example)
 
@@ -34,6 +34,10 @@ Input: *"Women 20–28 in Barcelona into indie music, A24 films, vintage fashion
 2. `qloo_describe` resolves the three references to Qloo IDs (asking the user if any is ambiguous); `qloo_find_tags` resolves each concept to a tag URN.
 3. `qloo_recommend` runs once per category with `signals` (IDs), `signal_tags`, `demographic` and `signal_location`.
 4. Results become numbered evidence (E1, E2…). The plan must cite those IDs; uncited ideas are dropped.
+
+## Live demo
+
+https://tastetocontent.onrender.com (free plan: allow up to a minute on the first visit while the server wakes up).
 
 ## Run it locally
 

@@ -1,6 +1,8 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+set "MSG=%~1"
+if "%MSG%"=="" set "MSG=Update README and tidy Qloo names"
 echo Subiendo cambios a GitHub...
 git add -A
 git diff --cached --name-only | findstr /i /r "^\.env$" >nul
@@ -11,7 +13,7 @@ if not errorlevel 1 (
   exit /b 1
 )
 git diff --cached --name-only
-git commit -m "Retry Qloo rate limits, lower concurrency, do not cache partial plans"
+git commit -m "%MSG%"
 git push
 if errorlevel 1 (
   echo.
