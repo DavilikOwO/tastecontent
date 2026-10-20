@@ -76,6 +76,7 @@ The public demo is rate-limited (`RATE_LIMIT_PER_HOUR`, default 6 finished plans
 - Musicians often exist in Qloo both as an "artist" and as a "person", and some names are also towns. The app collapses those twins and drops towns before asking, so the creator only chooses between genuinely different things.
 - Qloo uses age and gender only together with a location. Without one, the app leaves them out and says so.
 - Affinity scores from separate calls are not directly comparable, so bars are scaled within each category.
+- The hackathon key is rate-limited. The app runs at most two Qloo calls at a time and retries a throttled call (429) up to three times with backoff; if a category still fails, the plan says so and is not cached, so trying again a minute later gives the full map.
 
 ## Licence
 

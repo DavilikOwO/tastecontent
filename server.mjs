@@ -131,8 +131,11 @@ app.post("/api/plan", async (req, res) => {
     const result = await buildPlan(input, { qloo, llm, onEvent: send });
     if (result.ok) {
       counted = true;
-      cache.set(key, result);
-      if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value);
+      // A plan hit by Qloo throttling or a model failure is not cached, so trying again helps.
+      if (!result.partial) {
+        cache.set(key, result);
+        if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value);
+      }
     }
     send({ type: "done", result: { ...result, mode } });
   } catch (err) {
