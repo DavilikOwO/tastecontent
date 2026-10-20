@@ -58,7 +58,9 @@ Without a Qloo key the app runs on clearly labelled **sample data** (try the ref
 
 ## Deploy
 
-Qloo's harness must run next to the backend, so use a container host (not serverless). The included `Dockerfile` installs the harness. Set `QLOO_API_KEY` and `ANTHROPIC_API_KEY` as secrets in the host's dashboard. The browser never talks to Qloo directly and no key is ever sent to the client.
+Qloo's harness must run next to the backend, so use a container host (not serverless). The included `Dockerfile` installs the harness, and `render.yaml` deploys it on Render's free plan (New > Blueprint). Set `QLOO_API_KEY` and `ANTHROPIC_API_KEY` as secrets in the host's dashboard. The browser never talks to Qloo directly and no key is ever sent to the client.
+
+The public demo is rate-limited (`RATE_LIMIT_PER_HOUR`, default 6 finished plans per visitor; `DAILY_PLAN_LIMIT`, default 150). Cached plans and disambiguation steps do not count. On the free plan the service sleeps after 15 minutes without traffic, so the first request can take about a minute.
 
 ## Responsible data handling
 

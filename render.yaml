@@ -1,0 +1,24 @@
+# Render Blueprint: New > Blueprint > pick this repository.
+# Render asks for the two secret keys during creation; they are never stored in the repo.
+services:
+  - type: web
+    name: tastetocontent
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/status
+    autoDeployTrigger: commit
+    envVars:
+      - key: QLOO_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: QLOO_BASE_URL
+        value: https://hackathon.api.qloo.com
+      - key: QLOO_TRUSTED_BASE_URL
+        value: https://hackathon.api.qloo.com
+      # Usage limits for the public demo (finished plans only; cached plans are free).
+      - key: RATE_LIMIT_PER_HOUR
+        value: "6"
+      - key: DAILY_PLAN_LIMIT
+        value: "150"

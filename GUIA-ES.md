@@ -65,9 +65,24 @@ Si al configurar la clave te pregunta "Choose a model provider", pulsa Esc: no h
 ## 5. Clave de Claude
 Va en el archivo `.env`, en la línea `ANTHROPIC_API_KEY=`. **Nunca subas `.env` a GitHub** (ya está excluido en `.gitignore`). Si la clave falla o se queda sin saldo, la app sigue funcionando: escribe el plan con plantillas y lo avisa.
 
-## 6. Qué queda por hacer
-- Ajustar el código con las respuestas reales de Qloo (paso 4).
-- Probar con varias audiencias y pulir los textos del plan.
-- Alojar la demo online (Render o Railway con el `Dockerfile` incluido).
+## 6. Publicar la demo online (Render)
+Antes, sube a GitHub la última versión (el archivo `render.yaml` tiene que estar en el repositorio).
+
+1. Entra en https://render.com y regístrate con tu cuenta de **GitHub**.
+2. Pulsa **New** y elige **Blueprint**. Conecta tu repositorio `tastetocontent`. Render leerá `render.yaml` y preparará un servicio web gratuito.
+3. Te pedirá dos valores secretos. Pégalos ahí y **en ningún otro sitio**:
+   - `QLOO_API_KEY`: la clave de Qloo que te llegó por email.
+   - `ANTHROPIC_API_KEY`: la clave de Claude (la misma de tu archivo `.env`).
+4. Pulsa **Apply** o **Deploy**. La primera construcción tarda unos minutos. Si falla, copia el final del registro (Logs) y pásamelo.
+5. Abre la dirección que te da Render (algo como `https://tastetocontent.onrender.com`). Arriba a la derecha debe poner **"Live Qloo data"**.
+6. Pega esa dirección en el campo **Website** del repositorio en GitHub (engranaje junto a "About").
+
+Ten en cuenta:
+- En el plan gratuito, la app **se duerme tras 15 minutos sin visitas** y tarda alrededor de un minuto en despertar. Lo indicaremos en la descripción para los jueces.
+- La demo tiene **límites de uso**: 6 planes por visitante y hora, y 150 al día en total. Los planes repetidos (en caché) y las preguntas de "¿cuál querías decir?" no cuentan. Se cambian en Render, en **Environment**: `RATE_LIMIT_PER_HOUR` y `DAILY_PLAN_LIMIT`.
+- Revisa en la consola de Anthropic los límites de gasto de tu cuenta, para que una demo pública nunca pueda gastar más de lo que quieras.
+
+## 7. Qué queda por hacer
+- Publicar la demo online (paso 6).
 - Grabar el vídeo de demostración (menos de 3 minutos) y escribir la descripción en inglés.
 - Entregar en Devpost antes del **31 de octubre a las 04:45** (hora de Madrid).
